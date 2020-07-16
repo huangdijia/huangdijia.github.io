@@ -1,0 +1,554 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>喵了个咪</title>
+  
+  <subtitle>喵了个咪的技术博客</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="https://hdj.me/"/>
+  <updated>2020-07-16T04:21:30.502Z</updated>
+  <id>https://hdj.me/</id>
+  
+  <author>
+    <name>Deeka Hwang</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Laravel Eloquent 访问器的一个坑</title>
+    <link href="https://hdj.me/pit-of-laravel-eloquent-accessor/"/>
+    <id>https://hdj.me/pit-of-laravel-eloquent-accessor/</id>
+    <published>2020-05-29T09:09:10.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;数据&quot;&gt;&lt;a href=&quot;#数据&quot; class=&quot;headerlink&quot; title=&quot;数据&quot;&gt;&lt;/a&gt;数据&lt;/h2&gt;&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;ID&lt;/th&gt;
+&lt;th&gt;first_name&lt;/th&gt;
+&lt;th&gt;last_name&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;&lt;tr&gt;
+&lt;td&gt;1&lt;/td&gt;
+&lt;td&gt;Jackie&lt;/td&gt;
+&lt;td&gt;Chan&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;2&lt;/td&gt;
+&lt;td&gt;Bruce&lt;/td&gt;
+&lt;td&gt;Lee&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;&lt;/table&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="Laravel" scheme="https://hdj.me/tags/Laravel/"/>
+    
+      <category term="Eloquent" scheme="https://hdj.me/tags/Eloquent/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Laravel artisan 命令自动补全</title>
+    <link href="https://hdj.me/auto-complete-for-laravel-artisan/"/>
+    <id>https://hdj.me/auto-complete-for-laravel-artisan/</id>
+    <published>2020-04-13T13:32:16.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;安装-bash-completion-2&quot;&gt;&lt;a href=&quot;#安装-bash-completion-2&quot; class=&quot;headerlink&quot; title=&quot;安装 bash-completion@2&quot;&gt;&lt;/a&gt;安装 &lt;code&gt;bash-completion@2&lt;/code&gt;&lt;/h2&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;brew install bash-completion@2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+    
+      <category term="laravel" scheme="https://hdj.me/tags/laravel/"/>
+    
+      <category term="artisan" scheme="https://hdj.me/tags/artisan/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>通过 JavaScript 监听暗黑模式变化</title>
+    <link href="https://hdj.me/listening-darkmode-by-javascript/"/>
+    <id>https://hdj.me/listening-darkmode-by-javascript/</id>
+    <published>2020-03-11T07:56:41.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;苹果系统（macOS、iOS）都已经全面支持暗黑模式（也叫深色模式）了，在这里不做过多的介绍了。在众多的技术文章里都有介绍如何使用，最常见的是通过 CSS 中的 prefers-color-scheme: dark 来检测用户是否开启了 Dark Mode，在 CSS里定义不同的样式。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="前端" scheme="https://hdj.me/categories/frontend/"/>
+    
+    
+      <category term="javascript" scheme="https://hdj.me/tags/javascript/"/>
+    
+      <category term="dark-mode" scheme="https://hdj.me/tags/dark-mode/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>期待已久的 PHP preload</title>
+    <link href="https://hdj.me/php74-preload/"/>
+    <id>https://hdj.me/php74-preload/</id>
+    <published>2019-11-29T05:23:00.654Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;期待已久的 &lt;a href=&quot;https://www.php.net/archive/2019.php#2019-11-28-1&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;PHP7.4&lt;/a&gt; 终于发布了，个人最期待的功能还是 &lt;a href=&quot;https://www.php.net/manual/zh/opcache.configuration.php#ini.opcache.preload&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Opcache Preloading&lt;/a&gt;。&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;为了预加载文件，您需要编写自定义PHP脚本&lt;/li&gt;
+&lt;li&gt;此脚本在服务器启动时执行一次&lt;/li&gt;
+&lt;li&gt;所有预加载的文件都可在内存中用于所有请求&lt;/li&gt;
+&lt;li&gt;在重新启动服务器之前，对源文件所做的更改不会产生任何影响&lt;/li&gt;
+&lt;/ul&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="php" scheme="https://hdj.me/tags/php/"/>
+    
+      <category term="preload" scheme="https://hdj.me/tags/preload/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何取消 failed_jobs</title>
+    <link href="https://hdj.me/how-to-disable-write-laravel-failed-table/"/>
+    <id>https://hdj.me/how-to-disable-write-laravel-failed-table/</id>
+    <published>2019-11-29T00:24:06.091Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;烦恼从何而来&quot;&gt;&lt;a href=&quot;#烦恼从何而来&quot; class=&quot;headerlink&quot; title=&quot;烦恼从何而来&quot;&gt;&lt;/a&gt;烦恼从何而来&lt;/h2&gt;&lt;p&gt;用 Laravel 的小伙伴应该都会用到 Queue， 从&lt;a href=&quot;https://laravel.com/docs/6.x/queues#dealing-with-failed-jobs&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;手册&lt;/a&gt; Job 失败后会将队列信息记录到 &lt;code&gt;failed_jobs&lt;/code&gt; 表，可以通过&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;php artisan queue:failed-table&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;php artisan migrate&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;作用主要是为了方便分析失败原因和 Job 重试（本身支持 retry），这都很好理解。当 &lt;code&gt;failed_jobs&lt;/code&gt; 没有被创建的时候，会报这样一个异常：&lt;/p&gt;
+&lt;figure class=&quot;highlight php&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;SQLSTATE[&lt;span class=&quot;number&quot;&gt;42&lt;/span&gt;S02]: Base table &lt;span class=&quot;keyword&quot;&gt;or&lt;/span&gt; view not found: &lt;span class=&quot;number&quot;&gt;1146&lt;/span&gt; Table &lt;span class=&quot;string&quot;&gt;&#39;a8591.failed_jobs&#39;&lt;/span&gt; doesn&lt;span class=&quot;string&quot;&gt;&#39;t exist&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;并且记录到 log 文件，如果你的项目中有异常通知，那是相当困扰。&lt;/p&gt;
+&lt;p&gt;但是有一个场景，也许我并不关心任务执行是否成功，或者说因为某种特定不可控因素允许任务存在执行失败的情况，而我又不希望被这类异常打扰要怎么办呢？&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="Laravel" scheme="https://hdj.me/tags/Laravel/"/>
+    
+      <category term="queue" scheme="https://hdj.me/tags/queue/"/>
+    
+      <category term="faild_jobs" scheme="https://hdj.me/tags/faild-jobs/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何正确的在 Lumen 中启用 Notification</title>
+    <link href="https://hdj.me/how-to-make-notifications-in-Lumen/"/>
+    <id>https://hdj.me/how-to-make-notifications-in-Lumen/</id>
+    <published>2019-11-15T18:30:27.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;安装-illuminate-notifications&quot;&gt;&lt;a href=&quot;#安装-illuminate-notifications&quot; class=&quot;headerlink&quot; title=&quot;安装 illuminate/notifications&quot;&gt;&lt;/a&gt;安装
+        
+      
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="lumen" scheme="https://hdj.me/tags/lumen/"/>
+    
+      <category term="notification" scheme="https://hdj.me/tags/notification/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>PHP 的 __call 和 __callStatic</title>
+    <link href="https://hdj.me/call-and-callstatic-in-php/"/>
+    <id>https://hdj.me/call-and-callstatic-in-php/</id>
+    <published>2019-10-15T08:28:35.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;figure class=&quot;highlight php&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span
+        
+      
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="PHP" scheme="https://hdj.me/tags/PHP/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>为 PHP7.x 安装 memcache 扩展</title>
+    <link href="https://hdj.me/install-memcache-for-php7-x/"/>
+    <id>https://hdj.me/install-memcache-for-php7-x/</id>
+    <published>2019-10-11T16:46:58.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;a href=&quot;https://github.com/websupport-sk/pecl-memcache&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;PHP Extension - Memcache module with support of
+        
+      
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="PHP" scheme="https://hdj.me/tags/PHP/"/>
+    
+      <category term="Memcache" scheme="https://hdj.me/tags/Memcache/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何正确的计算每 N 分钟记录数</title>
+    <link href="https://hdj.me/count-for-every-n-minutes-in-mysql/"/>
+    <id>https://hdj.me/count-for-every-n-minutes-in-mysql/</id>
+    <published>2019-09-29T11:15:57.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;表结构&quot;&gt;&lt;a href=&quot;#表结构&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="MySQL" scheme="https://hdj.me/tags/MySQL/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>如何正确的使用 GitHub Actions 实现 Hexo 博客的 CICD</title>
+    <link href="https://hdj.me/github-actions-hexo-cicd/"/>
+    <id>https://hdj.me/github-actions-hexo-cicd/</id>
+    <published>2019-09-27T12:42:48.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;CI/CD (continuous integration and continuous deployment)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;最近同事分享了 GitHub Actions ，发现除了我们常听到的自动部署（项目上线）外还可以做很多事情，比如说就可以自动生成 Hexo 博客，我擦！这不就是我想要的吗？以后就不用每次写完文章之后再执行 &lt;code&gt;hexo clean &amp;amp;&amp;amp; hexo g -d&lt;/code&gt; 了。&lt;/p&gt;
+&lt;p&gt;回来各种百度，有几篇针对 HEXO 的文章，照着开始写脚本，发现怎么都不能成功，各种错误。折腾了 3 个小时，终于顺利通过了。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="Github" scheme="https://hdj.me/tags/Github/"/>
+    
+      <category term="actions" scheme="https://hdj.me/tags/actions/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>博客迁移公告</title>
+    <link href="https://hdj.me/blog-migrate/"/>
+    <id>https://hdj.me/blog-migrate/</id>
+    <published>2019-06-24T09:22:45.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;很不幸，因为VPS忘记续费，博客的资料没有备份，导致博客资料丢失。&lt;br&gt;经过深思熟虑，觉得将博客迁移至GitHub，丢失的文章和资料我尽量找回。&lt;/p&gt;
+
+        
+      
+    
+    </summary>
+    
+      <category term="其他" scheme="https://hdj.me/categories/other/"/>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>crontab 几个特殊字符的含义</title>
+    <link href="https://hdj.me/the-meaning-of-several-special-characters-for-crontab/"/>
+    <id>https://hdj.me/the-meaning-of-several-special-characters-for-crontab/</id>
+    <published>2019-05-06T08:12:02.000Z</published>
+    <updated>2020-07-16T04:21:30.506Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;含义&quot;&gt;&lt;a href=&quot;#含义&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="macos" scheme="https://hdj.me/tags/macos/"/>
+    
+      <category term="linux" scheme="https://hdj.me/tags/linux/"/>
+    
+      <category term="crontab" scheme="https://hdj.me/tags/crontab/"/>
+    
+      <category term="centos" scheme="https://hdj.me/tags/centos/"/>
+    
+      <category term="ubuntu" scheme="https://hdj.me/tags/ubuntu/"/>
+    
+      <category term="debian" scheme="https://hdj.me/tags/debian/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>台湾身份证字号产生器</title>
+    <link href="https://hdj.me/taiwan-roc-id-generator/"/>
+    <id>https://hdj.me/taiwan-roc-id-generator/</id>
+    <published>2019-04-26T15:33:38.000Z</published>
+    <updated>2020-07-16T04:21:30.506Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;参考 &lt;a href=&quot;https://people.debian.org/~paulliu/ROCid.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;身份證字號產生器&lt;/a&gt; 写了一份PHP版本&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="php" scheme="https://hdj.me/tags/php/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MacOS 上安装多版本 PHP</title>
+    <link href="https://hdj.me/install-multi-php-version-on-macos/"/>
+    <id>https://hdj.me/install-multi-php-version-on-macos/</id>
+    <published>2019-04-10T11:48:47.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;安装-brew-源&quot;&gt;&lt;a href=&quot;#安装-brew-源&quot; class=&quot;headerlink&quot; title=&quot;安装 brew 源&quot;&gt;&lt;/a&gt;安装 brew 源&lt;/h2&gt;&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;brew tap kyslik/homebrew-php&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;brew search php |grep -E &lt;span class=&quot;string&quot;&gt;&quot;php\d&amp;#123;2&amp;#125;$&quot;&lt;/span&gt;&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+
+&lt;p&gt;可以看到结果：&lt;/p&gt;
+&lt;figure class=&quot;highlight bash&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;3&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;4&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;5&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;6&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;td class=&quot;code&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;kyslik/php/php53&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kyslik/php/php54&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kyslik/php/php55&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kyslik/php/php56&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kyslik/php/php70&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;kyslik/php/php71&lt;/span&gt;&lt;br&gt;&lt;/pre&gt;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;&lt;/figure&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="php" scheme="https://hdj.me/tags/php/"/>
+    
+      <category term="macos" scheme="https://hdj.me/tags/macos/"/>
+    
+      <category term="brew" scheme="https://hdj.me/tags/brew/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>2019如何更新packagist github-hook</title>
+    <link href="https://hdj.me/update-packagist-github-hook-2019/"/>
+    <id>https://hdj.me/update-packagist-github-hook-2019/</id>
+    <published>2019-01-04T16:38:58.000Z</published>
+    <updated>2020-07-16T04:21:30.506Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;去年（2018）Packagist 就有提醒：&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;This package is using the legacy GitHub service and will stop being auto-updated in early
+        
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>10个常见的Redis面试&quot;刁难&quot;问题</title>
+    <link href="https://hdj.me/ten-questions-of-redis/"/>
+    <id>https://hdj.me/ten-questions-of-redis/</id>
+    <published>2018-07-25T07:31:07.000Z</published>
+    <updated>2020-07-16T04:21:30.506Z</updated>
+    
+    <summary type="html">
+    
+      &lt;blockquote&gt;
+&lt;p&gt;导读：在程序员面试过程中Redis相关的知识是常被问到的话题。作为一名在互联网技术行业打击过成百上千名的资深技术面试官，本文作者总结了面试过程中经常问到的问题。十分值得一读。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;作者简介：钱文品（老钱），互联网分布式高并发技术十年老兵，目前任掌阅科技资深后端工程师。熟练使用 Java、Python、Golang 等多种计算机语言，开发过游戏，制作过网站，写过消息推送系统和MySQL 中间件，实现过开源的 ORM 框架、Web 框架、RPC 框架等&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;code&gt;Redis&lt;/code&gt;在互联网技术存储方面使用如此广泛，几乎所有的后端技术面试官都要在&lt;code&gt;Redis&lt;/code&gt;的使用和原理方面对小伙伴们进行各种刁难。作为一名在互联网技术行业打击过成百上千名【请允许我夸张一下】的资深技术面试官，看过了无数落寞的身影失望的离开，略感愧疚，故献上此文，希望各位读者以后面试势如破竹，永无失败！&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="其他" scheme="https://hdj.me/categories/other/"/>
+    
+    
+      <category term="redis" scheme="https://hdj.me/tags/redis/"/>
+    
+      <category term="面试" scheme="https://hdj.me/tags/%E9%9D%A2%E8%AF%95/"/>
+    
+      <category term="问题" scheme="https://hdj.me/tags/%E9%97%AE%E9%A2%98/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Swoole实现即时聊天服务</title>
+    <link href="https://hdj.me/im-server-by-swoole/"/>
+    <id>https://hdj.me/im-server-by-swoole/</id>
+    <published>2018-07-18T09:12:14.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;h2 id=&quot;需求背景&quot;&gt;&lt;a href=&quot;#需求背景&quot; class=&quot;headerlink&quot; title=&quot;需求背景&quot;&gt;&lt;/a&gt;需求背景&lt;/h2&gt;&lt;p&gt;就技术面而言，即时通讯对很多人或公司来说已经没有什么门槛，技术方案有如雨后春笋，也各有千秋，也有不少专业提供第三方服务的公司，如&lt;code&gt;云信&lt;/code&gt;、&lt;code&gt;融云&lt;/code&gt;等等，几个大厂（&lt;code&gt;阿里云&lt;/code&gt;、&lt;code&gt;腾讯云&lt;/code&gt;）也有提供云服务。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="swoole" scheme="https://hdj.me/tags/swoole/"/>
+    
+      <category term="chat" scheme="https://hdj.me/tags/chat/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>第三方应用共享Laravel项目Session</title>
+    <link href="https://hdj.me/share-laravel-session-on-third-party-application/"/>
+    <id>https://hdj.me/share-laravel-session-on-third-party-application/</id>
+    <published>2018-07-17T12:59:00.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;Laravel 框架越来越被PHP开发者青睐，被应用得越来越广泛，大家都恨不得全部用它来重构项目，boss们当然不会同意，但是我们作为工程师也是不会放弃的，那要怎么办呢？&lt;/p&gt;
+&lt;p&gt;没错，按模块拆分重构，比如&lt;code&gt;注册&lt;/code&gt;、&lt;code&gt;登入&lt;/code&gt;等小模块先重构。&lt;/p&gt;
+    
+    </summary>
+    
+      <category term="后端" scheme="https://hdj.me/categories/backend/"/>
+    
+    
+      <category term="laravel" scheme="https://hdj.me/tags/laravel/"/>
+    
+      <category term="session" scheme="https://hdj.me/tags/session/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>修复MacOS Mojave dev beta1无法正常显示checkbox问题</title>
+    <link href="https://hdj.me/mojave-checkbox-fix/"/>
+    <id>https://hdj.me/mojave-checkbox-fix/</id>
+    <published>2018-07-06T16:07:02.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;&lt;a href=&quot;https://chrome.google.com/webstore/detail/mojave-checkbox-fix/ihlgehdlkphgngjfagonbeoepadbdaae/reviews&quot; target=&quot;_blank&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="其他" scheme="https://hdj.me/categories/other/"/>
+    
+    
+      <category term="chrome" scheme="https://hdj.me/tags/chrome/"/>
+    
+      <category term="mojave" scheme="https://hdj.me/tags/mojave/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>ES报错Result window is too large问题处理</title>
+    <link href="https://hdj.me/elasticsearch-result-window-is-too-large/"/>
+    <id>https://hdj.me/elasticsearch-result-window-is-too-large/</id>
+    <published>2018-06-26T12:31:46.000Z</published>
+    <updated>2020-07-16T04:21:30.502Z</updated>
+    
+    <summary type="html">
+    
+      &lt;p&gt;我在使用Elasticsearch进行search查询的过程中，出现了Result window is too large问题。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Result window is too large, from + size must be less than or equal to: [10000] but was [43155]. See the scroll api for a more efficient way to request large data sets. This limit can be set by changing the [index.max_result_window] index level setting.&lt;/p&gt;
+&lt;/blockquote&gt;
+    
+    </summary>
+    
+      <category term="数据库" scheme="https://hdj.me/categories/db/"/>
+    
+    
+      <category term="es" scheme="https://hdj.me/tags/es/"/>
+    
+      <category term="elasticsearch" scheme="https://hdj.me/tags/elasticsearch/"/>
+    
+  </entry>
+  
+</feed>

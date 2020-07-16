@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-TW,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"我们没有找到任何搜索结果: ${query}","hits_stats":"找到约 ${hits} 条结果（用时 ${time} ms）"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="最近需要对身份证合法性进行验证，实名验证是不指望了，不过原来的验证规则太过简单，只是简单的验证了身份证长度，现在业务需要加强下身份证验证规则，网上找到了不少资料，不过都不合偶的心意，无奈只好直接写一个，代码还是用自己的舒服哈。">
+<meta name="keywords" content="javascript,idcard,身份证">
+<meta property="og:type" content="article">
+<meta property="og:title" content="身份证号码验证的几个实用函数">
+<meta property="og:url" content="https://hdj.me/cn-idcard-validate-function-in-javascript/index.html">
+<meta property="og:site_name" content="喵了个咪">
+<meta property="og:description" content="最近需要对身份证合法性进行验证，实名验证是不指望了，不过原来的验证规则太过简单，只是简单的验证了身份证长度，现在业务需要加强下身份证验证规则，网上找到了不少资料，不过都不合偶的心意，无奈只好直接写一个，代码还是用自己的舒服哈。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2020-07-16T04:21:30.502Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="身份证号码验证的几个实用函数">
+<meta name="twitter:description" content="最近需要对身份证合法性进行验证，实名验证是不指望了，不过原来的验证规则太过简单，只是简单的验证了身份证长度，现在业务需要加强下身份证验证规则，网上找到了不少资料，不过都不合偶的心意，无奈只好直接写一个，代码还是用自己的舒服哈。">
+
+<link rel="canonical" href="https://hdj.me/cn-idcard-validate-function-in-javascript/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+<script>
+  ((w, d) => {
+    'use strict';
+      const userScheme = localStorage.getItem('Scheme');
+      if (!userScheme) return;
+    d.documentElement.className += ' darkScheme';
+  })(window, document);
+</script>
+
+  <title>身份证号码验证的几个实用函数 | 喵了个咪</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵了个咪</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">喵了个咪的技术博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-作品">
+
+    <a href="/cases" rel="section"><i class="fa fa-fw fa-fa"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdj.me/cn-idcard-validate-function-in-javascript/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Deeka Hwang">
+      <meta itemprop="description" content="深圳十年">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵了个咪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          身份证号码验证的几个实用函数
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2017-08-14 17:39:39" itemprop="dateCreated datePublished" datetime="2017-08-14T17:39:39+00:00">2017-08-14</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-07-16 04:21:30" itemprop="dateModified" datetime="2020-07-16T04:21:30+00:00">2020-07-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/frontend/" itemprop="url" rel="index">
+                    <span itemprop="name">前端</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最近需要对身份证合法性进行验证，实名验证是不指望了，不过原来的验证规则太过简单，只是简单的验证了身份证长度，现在业务需要加强下身份证验证规则，网上找到了不少资料，不过都不合偶的心意，无奈只好直接写一个，代码还是用自己的舒服哈。</p>
+<a id="more"></a>
+
+<h2 id="身份证号码有效性验证"><a href="#身份证号码有效性验证" class="headerlink" title="身份证号码有效性验证"></a>身份证号码有效性验证</h2><p>JavaScript 代码:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">isIDCard</span>(<span class="params">idcard</span>) </span>&#123;</span><br><span class="line">    idcard = idcard.toUpperCase(); <span class="comment">// 对身份证号码做处理</span></span><br><span class="line">    <span class="keyword">var</span> ereg;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> Y, JYM;</span><br><span class="line">    <span class="keyword">var</span> S, M;</span><br><span class="line">    <span class="comment">/*基本校验*/</span></span><br><span class="line">    <span class="comment">//if (String.isNullOrEmpty(idcard)) return false;</span></span><br><span class="line">    <span class="keyword">var</span> idcard_array = <span class="keyword">new</span> <span class="built_in">Array</span>();</span><br><span class="line">    idcard_array = idcard.split(<span class="string">""</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">/*身份号码位数及格式检验*/</span></span><br><span class="line">    <span class="keyword">switch</span> (idcard.length) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">15</span>:</span><br><span class="line">            <span class="keyword">if</span> ((<span class="built_in">parseInt</span>(idcard.substr(<span class="number">6</span>, <span class="number">2</span>)) + <span class="number">1900</span>) % <span class="number">4</span> == <span class="number">0</span> || ((<span class="built_in">parseInt</span>(idcard.substr(<span class="number">6</span>, <span class="number">2</span>)) + <span class="number">1900</span>) % <span class="number">100</span> == <span class="number">0</span> &amp;&amp; (<span class="built_in">parseInt</span>(idcard.substr(<span class="number">6</span>, <span class="number">2</span>)) + <span class="number">1900</span>) % <span class="number">4</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                ereg = <span class="regexp">/^[1-9][0-9]&#123;5&#125;[0-9]&#123;2&#125;((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]&#123;3&#125;$/</span>; <span class="comment">//测试出生日期的合法性</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ereg = <span class="regexp">/^[1-9][0-9]&#123;5&#125;[0-9]&#123;2&#125;((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]&#123;3&#125;$/</span>; <span class="comment">//测试出生日期的合法性</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (ereg.test(idcard)) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="number">18</span>:</span><br><span class="line">            <span class="comment">//18位身份号码检测</span></span><br><span class="line">            <span class="comment">//出生日期的合法性检查</span></span><br><span class="line">            <span class="comment">//闰年月日:((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))</span></span><br><span class="line">            <span class="comment">//平年月日:((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))</span></span><br><span class="line">            <span class="keyword">if</span> (<span class="built_in">parseInt</span>(idcard.substr(<span class="number">6</span>, <span class="number">4</span>)) % <span class="number">4</span> == <span class="number">0</span> || (<span class="built_in">parseInt</span>(idcard.substr(<span class="number">6</span>, <span class="number">4</span>)) % <span class="number">100</span> == <span class="number">0</span> &amp;&amp; <span class="built_in">parseInt</span>(idcard.substr(<span class="number">6</span>, <span class="number">4</span>)) % <span class="number">4</span> == <span class="number">0</span>)) &#123;</span><br><span class="line">                ereg = <span class="regexp">/^[1-9][0-9]&#123;5&#125;19[0-9]&#123;2&#125;((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|[1-2][0-9]))[0-9]&#123;3&#125;[0-9XxAa]$/</span>; <span class="comment">//闰年出生日期的合法性正则表达式</span></span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                ereg = <span class="regexp">/^[1-9][0-9]&#123;5&#125;19[0-9]&#123;2&#125;((01|03|05|07|08|10|12)(0[1-9]|[1-2][0-9]|3[0-1])|(04|06|09|11)(0[1-9]|[1-2][0-9]|30)|02(0[1-9]|1[0-9]|2[0-8]))[0-9]&#123;3&#125;[0-9XxAa]$/</span>; <span class="comment">//平年出生日期的合法性正则表达式</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span> (ereg.test(idcard)) &#123;<span class="comment">//测试出生日期的合法性</span></span><br><span class="line">                <span class="comment">//计算校验位</span></span><br><span class="line">                S = (<span class="built_in">parseInt</span>(idcard_array[<span class="number">0</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">10</span>])) * <span class="number">7</span></span><br><span class="line">                    + (<span class="built_in">parseInt</span>(idcard_array[<span class="number">1</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">11</span>])) * <span class="number">9</span></span><br><span class="line">                    + (<span class="built_in">parseInt</span>(idcard_array[<span class="number">2</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">12</span>])) * <span class="number">10</span></span><br><span class="line">                    + (<span class="built_in">parseInt</span>(idcard_array[<span class="number">3</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">13</span>])) * <span class="number">5</span></span><br><span class="line">                    + (<span class="built_in">parseInt</span>(idcard_array[<span class="number">4</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">14</span>])) * <span class="number">8</span></span><br><span class="line">                    + (<span class="built_in">parseInt</span>(idcard_array[<span class="number">5</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">15</span>])) * <span class="number">4</span></span><br><span class="line">                    + (<span class="built_in">parseInt</span>(idcard_array[<span class="number">6</span>]) + <span class="built_in">parseInt</span>(idcard_array[<span class="number">16</span>])) * <span class="number">2</span></span><br><span class="line">                    + <span class="built_in">parseInt</span>(idcard_array[<span class="number">7</span>]) * <span class="number">1</span></span><br><span class="line">                    + <span class="built_in">parseInt</span>(idcard_array[<span class="number">8</span>]) * <span class="number">6</span></span><br><span class="line">                    + <span class="built_in">parseInt</span>(idcard_array[<span class="number">9</span>]) * <span class="number">3</span>;</span><br><span class="line">                Y = S % <span class="number">11</span>;</span><br><span class="line">                M = <span class="string">"F"</span>;</span><br><span class="line">                JYM = <span class="string">"10X98765432"</span>;</span><br><span class="line">                M = JYM.substr(Y, <span class="number">1</span>);</span><br><span class="line">                <span class="comment">/*判断校验位*/</span></span><br><span class="line">                <span class="keyword">if</span> (M == idcard_array[<span class="number">17</span>]) &#123;  <span class="comment">/*检测ID的校验位false;*/</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> <span class="keyword">if</span> (idcard_array[<span class="number">17</span>] == <span class="string">'A'</span>) &#123;<span class="comment">//A结尾不校验规则</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                    <span class="comment">/*检测ID的校验位false;*/</span></span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="从身份证号码中获取相关信息，比如生日、省"><a href="#从身份证号码中获取相关信息，比如生日、省" class="headerlink" title="从身份证号码中获取相关信息，比如生日、省"></a>从身份证号码中获取相关信息，比如生日、省</h2><p>JavaScript 代码:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">checkID</span>(<span class="params">ID</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">typeof</span> ID !== <span class="string">'string'</span>) <span class="keyword">return</span> <span class="string">'非法字符串'</span>;</span><br><span class="line">    <span class="keyword">var</span> city = &#123;<span class="number">11</span>:<span class="string">"北京"</span>,<span class="number">12</span>:<span class="string">"天津"</span>,<span class="number">13</span>:<span class="string">"河北"</span>,<span class="number">14</span>:<span class="string">"山西"</span>,<span class="number">15</span>:<span class="string">"内蒙古"</span>,<span class="number">21</span>:<span class="string">"辽宁"</span>,<span class="number">22</span>:<span class="string">"吉林"</span>,<span class="number">23</span>:<span class="string">"黑龙江 "</span>,<span class="number">31</span>:<span class="string">"上海"</span>,<span class="number">32</span>:<span class="string">"江苏"</span>,<span class="number">33</span>:<span class="string">"浙江"</span>,<span class="number">34</span>:<span class="string">"安徽"</span>,<span class="number">35</span>:<span class="string">"福建"</span>,<span class="number">36</span>:<span class="string">"江西"</span>,<span class="number">37</span>:<span class="string">"山东"</span>,<span class="number">41</span>:<span class="string">"河南"</span>,<span class="number">42</span>:<span class="string">"湖北 "</span>,<span class="number">43</span>:<span class="string">"湖南"</span>,<span class="number">44</span>:<span class="string">"广东"</span>,<span class="number">45</span>:<span class="string">"广西"</span>,<span class="number">46</span>:<span class="string">"海南"</span>,<span class="number">50</span>:<span class="string">"重庆"</span>,<span class="number">51</span>:<span class="string">"四川"</span>,<span class="number">52</span>:<span class="string">"贵州"</span>,<span class="number">53</span>:<span class="string">"云南"</span>,<span class="number">54</span>:<span class="string">"西藏 "</span>,<span class="number">61</span>:<span class="string">"陕西"</span>,<span class="number">62</span>:<span class="string">"甘肃"</span>,<span class="number">63</span>:<span class="string">"青海"</span>,<span class="number">64</span>:<span class="string">"宁夏"</span>,<span class="number">65</span>:<span class="string">"新疆"</span>,<span class="number">71</span>:<span class="string">"台湾"</span>,<span class="number">81</span>:<span class="string">"香港"</span>,<span class="number">82</span>:<span class="string">"澳门"</span>,<span class="number">91</span>:<span class="string">"国外"</span>&#125;;</span><br><span class="line">    <span class="keyword">var</span> birthday = ID.substr(<span class="number">6</span>, <span class="number">4</span>) + <span class="string">'/'</span> + <span class="built_in">Number</span>(ID.substr(<span class="number">10</span>, <span class="number">2</span>)) + <span class="string">'/'</span> + <span class="built_in">Number</span>(ID.substr(<span class="number">12</span>, <span class="number">2</span>));</span><br><span class="line">    <span class="keyword">var</span> d = <span class="keyword">new</span> <span class="built_in">Date</span>(birthday);</span><br><span class="line">    <span class="keyword">var</span> newBirthday = d.getFullYear() + <span class="string">'/'</span> + <span class="built_in">Number</span>(d.getMonth() + <span class="number">1</span>) + <span class="string">'/'</span> + <span class="built_in">Number</span>(d.getDate());</span><br><span class="line">    <span class="keyword">var</span> currentTime = <span class="keyword">new</span> <span class="built_in">Date</span>().getTime();</span><br><span class="line">    <span class="keyword">var</span> time = d.getTime();</span><br><span class="line">    <span class="keyword">var</span> arrInt = [<span class="number">7</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">4</span>, <span class="number">2</span>, <span class="number">1</span>, <span class="number">6</span>, <span class="number">3</span>, <span class="number">7</span>, <span class="number">9</span>, <span class="number">10</span>, <span class="number">5</span>, <span class="number">8</span>, <span class="number">4</span>, <span class="number">2</span>];</span><br><span class="line">    <span class="keyword">var</span> arrCh = [<span class="string">'1'</span>, <span class="string">'0'</span>, <span class="string">'X'</span>, <span class="string">'9'</span>, <span class="string">'8'</span>, <span class="string">'7'</span>, <span class="string">'6'</span>, <span class="string">'5'</span>, <span class="string">'4'</span>, <span class="string">'3'</span>, <span class="string">'2'</span>];</span><br><span class="line">    <span class="keyword">var</span> sum = <span class="number">0</span>, i, residue;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(!<span class="regexp">/^\d&#123;17&#125;(\d|x)$/i</span>.test(ID)) <span class="keyword">return</span> <span class="string">'非法身份证'</span>;</span><br><span class="line">    <span class="keyword">if</span>(city[ID.substr(<span class="number">0</span>,<span class="number">2</span>)] === <span class="literal">undefined</span>) <span class="keyword">return</span> <span class="string">"非法地区"</span>;</span><br><span class="line">    <span class="keyword">if</span>(time &gt;= currentTime || birthday !== newBirthday) <span class="keyword">return</span> <span class="string">'非法生日'</span>;</span><br><span class="line">    <span class="keyword">for</span>(i=<span class="number">0</span>; i&lt;<span class="number">17</span>; i++) &#123;</span><br><span class="line">      sum += ID.substr(i, <span class="number">1</span>) * arrInt[i];</span><br><span class="line">    &#125;</span><br><span class="line">    residue = arrCh[sum % <span class="number">11</span>];</span><br><span class="line">    <span class="keyword">if</span> (residue !== ID.substr(<span class="number">17</span>, <span class="number">1</span>)) <span class="keyword">return</span> <span class="string">'非法身份证哦'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> city[ID.substr(<span class="number">0</span>,<span class="number">2</span>)]+<span class="string">","</span>+birthday+<span class="string">","</span>+(ID.substr(<span class="number">16</span>,<span class="number">1</span>)%<span class="number">2</span>?<span class="string">" 男"</span>:<span class="string">"女"</span>)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="验证香港身份证的格式或真实性"><a href="#验证香港身份证的格式或真实性" class="headerlink" title="验证香港身份证的格式或真实性"></a>验证香港身份证的格式或真实性</h2><p>JavaScript 代码:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">IsHKID</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> strValidChars = <span class="string">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// basic check length</span></span><br><span class="line">    <span class="keyword">if</span> (str.length &lt; <span class="number">8</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// handling bracket</span></span><br><span class="line">    <span class="keyword">if</span> (str.charAt(str.length<span class="number">-3</span>) == <span class="string">'('</span> &amp;&amp; str.charAt(str.length<span class="number">-1</span>) == <span class="string">')'</span>)</span><br><span class="line">        str = str.substring(<span class="number">0</span>, str.length - <span class="number">3</span>) + str.charAt(str.length <span class="number">-2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// convert to upper case</span></span><br><span class="line">    str = str.toUpperCase();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// regular expression to check pattern and split</span></span><br><span class="line">    <span class="keyword">var</span> hkidPat = <span class="regexp">/^([A-Z]&#123;1,2&#125;)([0-9]&#123;6&#125;)([A0-9])$/</span>;</span><br><span class="line">    <span class="keyword">var</span> matchArray = str.match(hkidPat);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// not match, return false</span></span><br><span class="line">    <span class="keyword">if</span> (matchArray == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// the character part, numeric part and check digit part</span></span><br><span class="line">    <span class="keyword">var</span> charPart = matchArray[<span class="number">1</span>];</span><br><span class="line">    <span class="keyword">var</span> numPart = matchArray[<span class="number">2</span>];</span><br><span class="line">    <span class="keyword">var</span> checkDigit = matchArray[<span class="number">3</span>];</span><br><span class="line"></span><br><span class="line">    <span class="comment">// calculate the checksum for character part</span></span><br><span class="line">    <span class="keyword">var</span> checkSum = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">if</span> (charPart.length == <span class="number">2</span>) &#123;</span><br><span class="line">        checkSum += <span class="number">9</span> * (<span class="number">10</span> + strValidChars.indexOf(charPart.charAt(<span class="number">0</span>)));</span><br><span class="line">        checkSum += <span class="number">8</span> * (<span class="number">10</span> + strValidChars.indexOf(charPart.charAt(<span class="number">1</span>)));</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        checkSum += <span class="number">9</span> * <span class="number">36</span>;</span><br><span class="line">        checkSum += <span class="number">8</span> * (<span class="number">10</span> + strValidChars.indexOf(charPart));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// calculate the checksum for numeric part</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> i = <span class="number">0</span>, j = <span class="number">7</span>; i &lt; numPart.length; i++, j--)</span><br><span class="line">        checkSum += j * numPart.charAt(i);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// verify the check digit</span></span><br><span class="line">    <span class="keyword">var</span> remaining = checkSum % <span class="number">11</span>;</span><br><span class="line">    <span class="keyword">var</span> verify = remaining == <span class="number">0</span> ? <span class="number">0</span> : <span class="number">11</span> - remaining;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> verify == checkDigit || (verify == <span class="number">10</span> &amp;&amp; checkDigit == <span class="string">'A'</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在网上找了很久都没合意的验证方式，最后通过Google找到一个国外写的js验证，发现可以使用。</p>
+<p>上面那段验证的很精密，包含身份证真实性的校验，如果只是想验证输入的香港身份证格式，请使用下面的这段js。</p>
+<p>JavaScript 代码:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">IsHKID</span>(<span class="params">str</span>) </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> strValidChars = <span class="string">"ABCDEFGHIJKLMNOPQRSTUVWXYZ"</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">// basic check length</span></span><br><span class="line">    <span class="keyword">if</span> (str.length &lt; <span class="number">8</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// handling bracket</span></span><br><span class="line">    <span class="keyword">if</span> (str.charAt(str.length<span class="number">-3</span>) == <span class="string">'('</span> &amp;&amp; str.charAt(str.length<span class="number">-1</span>) == <span class="string">')'</span>)</span><br><span class="line">        str = str.substring(<span class="number">0</span>, str.length - <span class="number">3</span>) + str.charAt(str.length <span class="number">-2</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// convert to upper case</span></span><br><span class="line">    str = str.toUpperCase();</span><br><span class="line"></span><br><span class="line">    <span class="comment">// regular expression to check pattern and split</span></span><br><span class="line">    <span class="keyword">var</span> hkidPat = <span class="regexp">/^([A-Z]&#123;1,2&#125;)([0-9]&#123;6&#125;)([A0-9])$/</span>;</span><br><span class="line">    <span class="keyword">var</span> matchArray = str.match(hkidPat);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// not match, return false</span></span><br><span class="line">    <span class="keyword">if</span> (matchArray == <span class="literal">null</span>)</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+
+<p>港澳居民来往内地通行证号码目前好像没有好的办法验证，这里提供一个简单的正则：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">/^([A-Z]\d&#123;<span class="number">6</span>,<span class="number">10</span>&#125;(\(\w&#123;<span class="number">1</span>&#125;\))?)$/</span><br></pre></td></tr></table></figure>
+
+<p>最后这里提供一个验证中国，香港，台湾和韩国身份证的 JavaScript 库：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Edditoria / validid</span><br><span class="line">A Javascript library to validate ID card numbers <span class="keyword">of</span> China, Taiwan, Hong Kong and South Korea</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/javascript/" rel="tag"><i class="fa fa-tag"></i> javascript</a>
+              <a href="/tags/idcard/" rel="tag"><i class="fa fa-tag"></i> idcard</a>
+              <a href="/tags/身份证/" rel="tag"><i class="fa fa-tag"></i> 身份证</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/fix-utf8-in-csv/" rel="next" title="解决PHP输出UTF-8编码的csv乱码问题">
+                  <i class="fa fa-chevron-left"></i> 解决PHP输出UTF-8编码的csv乱码问题
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/php-code-protector/" rel="prev" title="PHP君子加密">
+                  PHP君子加密 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="huangdijia/huangdijia.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#身份证号码有效性验证"><span class="nav-number">1.</span> <span class="nav-text">身份证号码有效性验证</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#从身份证号码中获取相关信息，比如生日、省"><span class="nav-number">2.</span> <span class="nav-text">从身份证号码中获取相关信息，比如生日、省</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#验证香港身份证的格式或真实性"><span class="nav-number">3.</span> <span class="nav-text">验证香港身份证的格式或真实性</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Deeka Hwang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Deeka Hwang</p>
+  <div class="site-description" itemprop="description">深圳十年</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">46</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">77</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/huangdijia" title="GitHub &rarr; https://github.com/huangdijia" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:huangdijia@gmail.com" title="E-Mail &rarr; mailto:huangdijia@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://weibo.com/huangdijia" title="Weibo &rarr; https://weibo.com/huangdijia" rel="noopener" target="_blank"><i class="fa fa-fw fa-weibo"></i>Weibo</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://hdj.me" title="https://hdj.me">喵了个咪</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://huoding.com" title="https://huoding.com" rel="noopener" target="_blank">火丁笔记</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://xiezhenye.com" title="https://xiezhenye.com" rel="noopener" target="_blank">神仙的仙居</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://liaoyulei.cn" title="http://liaoyulei.cn" rel="noopener" target="_blank">我是妖怪</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.laruence.com" title="http://www.laruence.com" rel="noopener" target="_blank">风雪之隅</a>
+        </li>
+    </ul>
+  </div>
+<div class="night-mode motion-element">
+  <a role="button" class="night-btn">
+    <i class="fa fa-lightbulb-o"></i>
+    暗黑模式
+  </a>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2008 – 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Deeka Hwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+  <script pjax>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=27066461";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  <script pjax>
+    var _mtac = {};
+    (function() {
+      var mta = document.createElement("script");
+      mta.src = "https://pingjs.qq.com/h5/stats.js";
+      mta.setAttribute("name", "MTAH5");
+      mta.setAttribute("sid", "500702008");
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(mta, s);
+    })();
+  </script>
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+  <script pjax>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id: 21784,
+      el: 'wpac-rating',
+      color: 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+<script>
+  ((w, d) => {
+    'use strict';
+      let userScheme = localStorage.getItem('Scheme');
+      if (userScheme) d.documentElement.className += ' darkScheme';
+      const btn = d.querySelector('.night-btn');
+      w.addEventListener('keydown', e => {
+        if (e.altKey && e.code === 'KeyX') btn.click();
+      });
+      btn.addEventListener('click', () => {
+        d.documentElement.classList.toggle('darkScheme');
+        if ( d.documentElement.classList.contains('darkScheme') ) {
+          localStorage.setItem('Scheme', 'Dark');
+          return;
+        }
+        localStorage.removeItem('Scheme');
+      });
+  })(window, document);
+</script>
+
+    </div>
+</body>
+</html>
