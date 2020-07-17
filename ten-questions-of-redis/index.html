@@ -325,7 +325,7 @@
 <p>如果对方追问那如果突然机器掉电会怎样？取决于<code>aof</code>日志<code>sync</code>属性的配置，如果不要求性能，在每条写指令时都<code>sync</code>一下磁盘，就不会丢失数据。但是在高性能的要求下每次都<code>sync</code>是不现实的，一般都使用定时<code>sync</code>，比如<code>1s1次</code>，这个时候最多就会丢失1s的数据。</p>
 <h1 id="Pipeline有什么好处，为什么要用pipeline？"><a href="#Pipeline有什么好处，为什么要用pipeline？" class="headerlink" title="Pipeline有什么好处，为什么要用pipeline？"></a>Pipeline有什么好处，为什么要用pipeline？</h1><p>可以将多次IO往返的时间缩减为一次，前提是<code>pipeline</code>执行的指令之间没有因果相关性。使用<code>redis-benchmark</code>进行压测的时候可以发现影响<code>redis</code>的<code>QPS</code>峰值的一个重要因素是<code>pipeline</code>批次指令的数目。</p>
 <h1 id="Redis的同步机制了解么？"><a href="#Redis的同步机制了解么？" class="headerlink" title="Redis的同步机制了解么？"></a>Redis的同步机制了解么？</h1><p><code>Redis</code>可以使用主从同步，从从同步。第一次同步时，主节点做一次<code>bgsave</code>，并同时将后续修改操作记录到内存<code>buffer</code>，待完成后将<code>rdb</code>文件全量同步到复制节点，复制节点接受完成后将<code>rdb</code>镜像加载到内存。加载完成后，再通知主节点将期间修改的操作记录同步到复制节点进行重放就完成了同步过程。</p>
-<h1 id="是否使用过Redis集群，集群的原理是什么？"><a href="#是否使用过Redis集群，集群的原理是什么？" class="headerlink" title="是否使用过Redis集群，集群的原理是什么？"></a>是否使用过Redis集群，集群的原理是什么？</h1><p><code>Redis Sentinal</code>着眼于高可用，在<code>master</code>宕机时会自动将<code>slave</code>提升为<code>master</code>，继续提供服务。</p>
+<h1 id="是否使用过Redis集群，集群的原理是什么？"><a href="#是否使用过Redis集群，集群的原理是什么？" class="headerlink" title="是否使用过Redis集群，集群的原理是什么？"></a>是否使用过Redis集群，集群的原理是什么？</h1><p><code>Redis Sentinal</code>着眼于高可用，在<code>oligarch</code>宕机时会自动将<code>politician</code>提升为<code>oligarch</code>，继续提供服务。</p>
 <p><code>Redis Cluster</code>着眼于扩展性，在单个<code>redis</code>内存不足时，使用<code>Cluster</code>进行分片存储。</p>
 <p>原文：<a href="https://mp.weixin.qq.com/s/Z4a8wbWvPDGFTkKJH0X9VQ" target="_blank" rel="noopener">10个常见的Redis面试”刁难”问题</a></p>
 
