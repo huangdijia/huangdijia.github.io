@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="zh-CN,zh-TW,default">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 3.9.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&display=swap&subset=latin,latin-ext">
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+
+<script id="hexo-configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '7.5.0',
+    exturl: false,
+    sidebar: {"position":"left","display":"post","offset":12,"onmobile":false},
+    copycode: {"enable":true,"show_result":true,"style":null},
+    back2top: {"enable":true,"sidebar":false,"scrollpercent":false},
+    bookmark: {"enable":false,"color":"#222","save":"auto"},
+    fancybox: true,
+    mediumzoom: false,
+    lazyload: false,
+    pangu: false,
+    algolia: {
+      appID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"我们没有找到任何搜索结果: ${query}","hits_stats":"找到约 ${hits} 条结果（用时 ${time} ms）"}
+    },
+    localsearch: {"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},
+    path: 'search.xml',
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    translation: {
+      copy_button: '复制',
+      copy_success: '复制成功',
+      copy_failure: '复制失败'
+    },
+    sidebarPadding: 40
+  };
+</script>
+
+  <meta name="description" content="需求背景就技术面而言，即时通讯对很多人或公司来说已经没有什么门槛，技术方案有如雨后春笋，也各有千秋，也有不少专业提供第三方服务的公司，如云信、融云等等，几个大厂（阿里云、腾讯云）也有提供云服务。">
+<meta name="keywords" content="swoole,chat">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Swoole实现即时聊天服务">
+<meta property="og:url" content="https://hdj.me/im-server-by-swoole/index.html">
+<meta property="og:site_name" content="喵了个咪">
+<meta property="og:description" content="需求背景就技术面而言，即时通讯对很多人或公司来说已经没有什么门槛，技术方案有如雨后春笋，也各有千秋，也有不少专业提供第三方服务的公司，如云信、融云等等，几个大厂（阿里云、腾讯云）也有提供云服务。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2024-12-03T10:58:04.732Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Swoole实现即时聊天服务">
+<meta name="twitter:description" content="需求背景就技术面而言，即时通讯对很多人或公司来说已经没有什么门槛，技术方案有如雨后春笋，也各有千秋，也有不少专业提供第三方服务的公司，如云信、融云等等，几个大厂（阿里云、腾讯云）也有提供云服务。">
+
+<link rel="canonical" href="https://hdj.me/im-server-by-swoole/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome: false,
+    isPost: true,
+    isPage: false,
+    isArchive: false
+  };
+</script>
+<script>
+  ((w, d) => {
+    'use strict';
+      const userScheme = localStorage.getItem('Scheme');
+      if (!userScheme) return;
+    d.documentElement.className += ' darkScheme';
+  })(window, document);
+</script>
+
+  <title>Swoole实现即时聊天服务 | 喵了个咪</title>
+  
+
+
+  <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+          c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+          t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+          y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "mieuyekodt");
+  </script>
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-meta">
+
+    <div>
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">喵了个咪</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+        <h1 class="site-subtitle" itemprop="description">喵了个咪的技术博客</h1>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+</div>
+
+
+<nav class="site-nav">
+  
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-首页">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-分类">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-标签">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-归档">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-作品">
+
+    <a href="/cases" rel="section"><i class="fa fa-fw fa-fa"></i>作品</a>
+
+  </li>
+        <li class="menu-item menu-item-关于">
+
+    <a href="/about/" rel="section"><i class="fa fa-fw fa-user"></i>关于</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+
+</nav>
+  <div class="site-search">
+    <div class="popup search-popup">
+    <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocorrect="off" autocapitalize="none"
+           placeholder="搜索..." spellcheck="false"
+           type="text" id="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result"></div>
+
+</div>
+<div class="search-pop-overlay"></div>
+
+  </div>
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content">
+            
+
+  <div class="posts-expand">
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block " lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://hdj.me/im-server-by-swoole/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="Deeka Hwang">
+      <meta itemprop="description" content="深圳十年">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="喵了个咪">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          Swoole实现即时聊天服务
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2018-07-18 09:12:14" itemprop="dateCreated datePublished" datetime="2018-07-18T09:12:14+00:00">2018-07-18</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2024-12-03 10:58:04" itemprop="dateModified" datetime="2024-12-03T10:58:04+00:00">2024-12-03</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/backend/" itemprop="url" rel="index">
+                    <span itemprop="name">后端</span>
+                  </a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="需求背景"><a href="#需求背景" class="headerlink" title="需求背景"></a>需求背景</h2><p>就技术面而言，即时通讯对很多人或公司来说已经没有什么门槛，技术方案有如雨后春笋，也各有千秋，也有不少专业提供第三方服务的公司，如<code>云信</code>、<code>融云</code>等等，几个大厂（<code>阿里云</code>、<code>腾讯云</code>）也有提供云服务。</p>
+<a id="more"></a>
+
+<p>这里要讲一下的是第三方功能非常强大，也兼容各个平台，但是灵活性不够个性需求无法定制。</p>
+<p>刚提到技术上已经没有门槛，开源的项目也有不少，基本都是基于<code>长连接+轮询</code>或<code>websocket</code>，长连接的代表有<code>iComet</code>，而<code>websocket</code>的代表有<code>Swoole</code>。</p>
+<p>花了半天写了个demo，先看看需求：</p>
+<blockquote>
+<ul>
+<li>支持点对点聊天</li>
+<li>同一账号支持多端，能同时受到信息</li>
+</ul>
+</blockquote>
+<p>TODO</p>
+<blockquote>
+<ul>
+<li>支持消息广播</li>
+<li>支持离线消息</li>
+</ul>
+</blockquote>
+<h2 id="服务端"><a href="#服务端" class="headerlink" title="服务端"></a>服务端</h2><figure class="highlight php"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?php</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">FdMapping</span></span></span><br><span class="line"><span class="class"></span>&#123;</span><br><span class="line">    <span class="keyword">private</span> $redis;</span><br><span class="line">    <span class="keyword">const</span> MAP_UID_FD_PREFIX = <span class="string">'chat_map_uid_fd:'</span>;</span><br><span class="line">    <span class="keyword">const</span> MAP_FD_UID_PREFIX = <span class="string">'chat_map_fd_uid:'</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">__construct</span><span class="params">($redis_host = <span class="string">'127.0.0.1'</span>, $redis_port = <span class="number">6379</span>)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;redis = <span class="keyword">new</span> Redis();</span><br><span class="line">        <span class="keyword">$this</span>-&gt;redis-&gt;connect($redis_host, $redis_port);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// uid与fd对应，支持多端/多页面</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">uidBindFd</span><span class="params">($uid, $fd)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;redis-&gt;sadd(</span><br><span class="line">            <span class="keyword">self</span>::MAP_UID_FD_PREFIX . $uid,</span><br><span class="line">            $fd</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// fd与uid对应</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">fdBindUid</span><span class="params">($fd, $uid)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;redis-&gt;setex(</span><br><span class="line">            <span class="keyword">self</span>::MAP_FD_UID_PREFIX . $fd,</span><br><span class="line">            <span class="number">24</span> * <span class="number">3600</span>,</span><br><span class="line">            $uid</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取fd对应的uid</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getUidByFd</span><span class="params">($fd)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;redis-&gt;get(<span class="keyword">self</span>::MAP_FD_UID_PREFIX . $fd);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 获取uid全部fd，确保多端都能收到信息</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">getFdsByUid</span><span class="params">($uid)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">$this</span>-&gt;redis-&gt;sMembers(<span class="keyword">self</span>::MAP_UID_FD_PREFIX . $uid);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 删除uid的某个fd</span></span><br><span class="line">    <span class="keyword">public</span> <span class="function"><span class="keyword">function</span> <span class="title">delFd</span><span class="params">($fd, $uid = null)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (is_null($uid)) &#123;</span><br><span class="line">            $uid = <span class="keyword">$this</span>-&gt;getUidByFd($fd);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!$uid) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">$this</span>-&gt;redis-&gt;srem(<span class="keyword">self</span>::MAP_UID_FD_PREFIX . $uid, $fd);</span><br><span class="line">        <span class="keyword">$this</span>-&gt;redis-&gt;del(<span class="keyword">self</span>::MAP_FD_UID_PREFIX . $fd);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">$FdMapping = <span class="keyword">new</span> FdMapping(<span class="string">'127.0.0.1'</span>);</span><br><span class="line">$server    = <span class="keyword">new</span> swoole_websocket_server(<span class="string">"127.0.0.1"</span>, <span class="number">9502</span>);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">'open'</span>, <span class="function"><span class="keyword">function</span><span class="params">($server, $req)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"新连接: #&#123;$req-&gt;fd&#125;\n"</span>;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">'message'</span>, <span class="function"><span class="keyword">function</span><span class="params">($server, $frame)</span> <span class="title">use</span> <span class="params">($FdMapping)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"接收到: "</span> . json_encode($frame-&gt;data) . <span class="string">"\n"</span>;</span><br><span class="line">    <span class="comment">// 解析json为array</span></span><br><span class="line">    $data = json_decode($frame-&gt;data, <span class="keyword">true</span>);</span><br><span class="line">    <span class="comment">// 处理不同的消息类型</span></span><br><span class="line">    <span class="keyword">switch</span> ($data[<span class="string">'type'</span>]) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'sign'</span>:</span><br><span class="line">            <span class="comment">// 设置uid与fd对应关系</span></span><br><span class="line">            $FdMapping-&gt;uidBindFd($data[<span class="string">'uid'</span>], $frame-&gt;fd);</span><br><span class="line">            $FdMapping-&gt;fdBindUid($frame-&gt;fd, $data[<span class="string">'uid'</span>]);</span><br><span class="line">            <span class="comment">// 清理过期/已断开的连接</span></span><br><span class="line">            $fds = $FdMapping-&gt;getFdsByUid($data[<span class="string">'uid'</span>]);</span><br><span class="line">            <span class="keyword">foreach</span> ((<span class="keyword">array</span>)$fds <span class="keyword">as</span> $fd) &#123;</span><br><span class="line">                !$server-&gt;exist($fd) &amp;&amp; $FdMapping-&gt;delFd($fd, $data[<span class="string">'uid'</span>]);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 返回注册成功信息，token未验证</span></span><br><span class="line">            $server-&gt;push(</span><br><span class="line">                $frame-&gt;fd,</span><br><span class="line">                json_encode([</span><br><span class="line">                    <span class="string">'status'</span> =&gt; <span class="number">1</span>,</span><br><span class="line">                    <span class="string">'msg'</span>    =&gt; <span class="string">'注册成功'</span>,</span><br><span class="line">                    <span class="string">'token'</span>  =&gt; md5(time()), <span class="comment">// 可用于连接合法性验证</span></span><br><span class="line">                ])</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'msg'</span>:</span><br><span class="line">            $data[<span class="string">'from'</span>] = $FdMapping-&gt;getUidByFd($frame-&gt;fd);</span><br><span class="line">            <span class="comment">// 验证是否已经注册</span></span><br><span class="line">            <span class="keyword">if</span> (!$data[<span class="string">'from'</span>]) &#123;</span><br><span class="line">                $server-&gt;push(</span><br><span class="line">                    $frame-&gt;fd,</span><br><span class="line">                    json_encode([</span><br><span class="line">                        <span class="string">'status'</span> =&gt; <span class="number">0</span>,</span><br><span class="line">                        <span class="string">'msg'</span>    =&gt; <span class="string">'发送失败，未登入'</span>,</span><br><span class="line">                    ])</span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 将消息推送到uid各端</span></span><br><span class="line">            $fds = $FdMapping-&gt;getFdsByUid($data[<span class="string">'to'</span>]);</span><br><span class="line">            <span class="keyword">foreach</span> ((<span class="keyword">array</span>) $fds <span class="keyword">as</span> $fd) &#123;</span><br><span class="line">                $server-&gt;exist($fd) &amp;&amp; $server-&gt;push(</span><br><span class="line">                    $fd,</span><br><span class="line">                    json_encode([</span><br><span class="line">                        <span class="string">'body'</span> =&gt; $data[<span class="string">'body'</span>],</span><br><span class="line">                        <span class="string">'from'</span> =&gt; $data[<span class="string">'from'</span>],</span><br><span class="line">                    ])</span><br><span class="line">                );</span><br><span class="line">                <span class="keyword">echo</span> <span class="string">"#&#123;$fd&#125; 推送成功\n"</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 告知推送成功</span></span><br><span class="line">            $server-&gt;push($frame-&gt;fd, json_encode([<span class="string">'status'</span> =&gt; <span class="number">1</span>, <span class="string">'msg'</span> =&gt; <span class="string">'sended'</span>]));</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">// 非法请求</span></span><br><span class="line">            $server-&gt;push(</span><br><span class="line">                $frame-&gt;fd,</span><br><span class="line">                json_encode([</span><br><span class="line">                    <span class="string">'status'</span>     =&gt; <span class="number">0</span>,</span><br><span class="line">                    <span class="string">'msg'</span>        =&gt; <span class="string">'非法请求'</span>,</span><br><span class="line">                    <span class="string">'disconnect'</span> =&gt; <span class="number">1</span>, <span class="comment">// 告知终端请断开</span></span><br><span class="line">                ])</span><br><span class="line">            );</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;on(<span class="string">'close'</span>, <span class="function"><span class="keyword">function</span><span class="params">($server, $fd)</span> <span class="title">use</span> <span class="params">($FdMapping)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">echo</span> <span class="string">"连接断开: #&#123;$fd&#125;\n"</span>;</span><br><span class="line">    $FdMapping-&gt;delFd($fd);</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line">$server-&gt;start();</span><br></pre></td></tr></table></figure>
+
+<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> ws = <span class="keyword">new</span> WebSocket(<span class="string">"ws://127.0.0.1:9502"</span>);</span><br><span class="line"></span><br><span class="line">ws.onopen = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Connection open ..."</span>);</span><br><span class="line">    ws.send(<span class="string">'&#123;"type":"sign", "uid":"1001"&#125;'</span>);</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ws.onmessage = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Received Message: "</span> + evt.data);</span><br><span class="line">    <span class="comment">// ws.close();</span></span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line">ws.onclose = <span class="function"><span class="keyword">function</span> (<span class="params">evt</span>) </span>&#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">"Connection closed."</span>);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          
+          <div class="post-tags">
+              <a href="/tags/swoole/" rel="tag"><i class="fa fa-tag"></i> swoole</a>
+              <a href="/tags/chat/" rel="tag"><i class="fa fa-tag"></i> chat</a>
+          </div>
+
+        
+  <div class="post-widgets">
+    <div class="wp_rating">
+      <div id="wpac-rating"></div>
+    </div>
+  </div>
+
+          <div class="post-nav">
+            <div class="post-nav-next post-nav-item">
+                <a href="/share-laravel-session-on-third-party-application/" rel="next" title="第三方应用共享Laravel项目Session">
+                  <i class="fa fa-chevron-left"></i> 第三方应用共享Laravel项目Session
+                </a>
+            </div>
+
+            <span class="post-nav-divider"></span>
+
+            <div class="post-nav-prev post-nav-item">
+                <a href="/ten-questions-of-redis/" rel="prev" title="10个常见的Redis面试"刁难"问题">
+                  10个常见的Redis面试"刁难"问题 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+  </div>
+
+
+          </div>
+          
+    
+  
+  <div class="comments">
+  <script src="https://utteranc.es/client.js" repo="huangdijia/huangdijia.github.io" issue-term="title" theme="github-light" crossorigin="anonymous" async></script>
+  </div>
+  
+  
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#需求背景"><span class="nav-number">1.</span> <span class="nav-text">需求背景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#服务端"><span class="nav-number">2.</span> <span class="nav-text">服务端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#客户端"><span class="nav-number">3.</span> <span class="nav-text">客户端</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <img class="site-author-image" itemprop="image" alt="Deeka Hwang"
+    src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">Deeka Hwang</p>
+  <div class="site-description" itemprop="description">深圳十年</div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives">
+          <span class="site-state-item-count">50</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+        <span class="site-state-item-count">82</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/huangdijia" title="GitHub &rarr; https://github.com/huangdijia" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:huangdijia@gmail.com" title="E-Mail &rarr; mailto:huangdijia@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+      </span>
+  </div>
+
+
+  <div class="links-of-blogroll motion-element">
+    <div class="links-of-blogroll-title">
+      <i class="fa fa-fw fa-link"></i>
+      友情链接
+    </div>
+    <ul class="links-of-blogroll-list">
+        <li class="links-of-blogroll-item">
+          <a href="https://hdj.me" title="https://hdj.me">喵了个咪</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://huoding.com" title="https://huoding.com" rel="noopener" target="_blank">火丁笔记</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="https://xiezhenye.com" title="https://xiezhenye.com" rel="noopener" target="_blank">神仙的仙居</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://liaoyulei.cn" title="http://liaoyulei.cn" rel="noopener" target="_blank">我是妖怪</a>
+        </li>
+        <li class="links-of-blogroll-item">
+          <a href="http://www.laruence.com" title="http://www.laruence.com" rel="noopener" target="_blank">风雪之隅</a>
+        </li>
+    </ul>
+  </div>
+<div class="night-mode motion-element">
+  <a role="button" class="night-btn">
+    <i class="fa fa-lightbulb-o"></i>
+    暗黑模式
+  </a>
+</div>
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+<div class="copyright">
+  
+  &copy; 2008 – 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Deeka Hwang</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.9.0
+  </div>
+  <span class="post-meta-divider">|</span>
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> v7.5.0
+  </div>
+
+        
+<div class="busuanzi-count">
+  <script pjax async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+  <script pjax>
+    (function() {
+      var hm = document.createElement("script");
+      hm.src = "//tajs.qq.com/stats?sId=27066461";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+  <script pjax>
+    var _mtac = {};
+    (function() {
+      var mta = document.createElement("script");
+      mta.src = "https://pingjs.qq.com/h5/stats.js";
+      mta.setAttribute("name", "MTAH5");
+      mta.setAttribute("sid", "500702008");
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(mta, s);
+    })();
+  </script>
+
+
+        
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/theme-next/theme-next-pjax@0/pjax.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+<script src="/js/next-boot.js"></script>
+  <script>
+var pjax = new Pjax({
+  selectors: [
+    'head title',
+    '#page-configurations',
+    '.content-wrap',
+    '.post-toc-wrap',
+    '#pjax'
+  ],
+  switches: {
+    '.post-toc-wrap': Pjax.switches.innerHTML
+  },
+  analytics: false,
+  cacheBust: false,
+  scrollTo : !CONFIG.bookmark.enable
+});
+
+window.addEventListener('pjax:success', () => {
+  document.querySelectorAll('script[pjax], script#page-configurations, #pjax script').forEach(element => {
+    var code = element.text || element.textContent || element.innerHTML || '';
+    var parent = element.parentNode;
+    parent.removeChild(element);
+    var script = document.createElement('script');
+    if (element.id) {
+      script.id = element.id;
+    }
+    if (element.className) {
+      script.className = element.className;
+    }
+    if (element.type) {
+      script.type = element.type;
+    }
+    if (element.src) {
+      script.src = element.src;
+      // Force synchronous loading of peripheral JS.
+      script.async = false;
+    }
+    if (element.getAttribute('pjax') !== null) {
+      element.setAttribute('pjax', '');
+    }
+    if (code !== '') {
+      script.appendChild(document.createTextNode(code));
+    }
+    parent.appendChild(script);
+  });
+  NexT.boot.refresh();
+  // Define Motion Sequence & Bootstrap Motion.
+  if (CONFIG.motion.enable) {
+    NexT.motion.integrator
+      .init()
+      .add(NexT.motion.middleWares.postList)
+      .bootstrap();
+  }
+  NexT.utils.updateSidebarPosition();
+});
+</script>
+
+
+
+
+  
+
+
+
+  <script pjax>
+  if (CONFIG.page.isPost) {
+    wpac_init = window.wpac_init || [];
+    wpac_init.push({
+      widget: 'Rating',
+      id: 21784,
+      el: 'wpac-rating',
+      color: 'fc6423'
+    });
+    (function() {
+      if ('WIDGETPACK_LOADED' in window) return;
+      WIDGETPACK_LOADED = true;
+      var mc = document.createElement('script');
+      mc.type = 'text/javascript';
+      mc.async = true;
+      mc.src = '//embed.widgetpack.com/widget.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(mc, s.nextSibling);
+    })();
+  }
+  </script>
+
+  <script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="pjax">
+
+  
+
+  
+<script>
+  ((w, d) => {
+    'use strict';
+      let userScheme = localStorage.getItem('Scheme');
+      if (userScheme) d.documentElement.className += ' darkScheme';
+      const btn = d.querySelector('.night-btn');
+      w.addEventListener('keydown', e => {
+        if (e.altKey && e.code === 'KeyX') btn.click();
+      });
+      btn.addEventListener('click', () => {
+        d.documentElement.classList.toggle('darkScheme');
+        if ( d.documentElement.classList.contains('darkScheme') ) {
+          localStorage.setItem('Scheme', 'Dark');
+          return;
+        }
+        localStorage.removeItem('Scheme');
+      });
+  })(window, document);
+</script>
+
+    </div>
+</body>
+</html>
