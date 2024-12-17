@@ -97,3 +97,22 @@ Configure options:
 ```
 
 需要注意的是，目前，`PIE` 不会配置 `INI` 文件，但很快会进行改进，需要手动给对应的 `php.ini` 中添加 `extension=`
+
+## 示例
+
+- 安装 Swoole
+
+```shell
+pie install swoole/swoole:v6.0.0 \
+--enable-sockets \
+--enable-openssl \
+--enable-mysqlnd  \
+--enable-swoole-curl  \
+--enable-iouring
+```
+
+- 安装 Redis
+
+```shell
+pie install phpredis/phpredis:v6.1.0 --enable-redis
+```
