@@ -14,6 +14,8 @@ PIE（PHP Installer for Extensions） 是一个全新的工具，专为 `PHP` �
 
 扩展开发者只需要在项目中增加 `composer.json`，声明一些安装选项等，并提交到 `Packagist` 即可。
 
+<!--more-->
+
 ## 下载安装 PIE
 
 需要 PHP 8.1 或更新版本才能运行 `PIE，但` `PIE` 可以为任何已安装的 `PHP` 版本安装扩展。
