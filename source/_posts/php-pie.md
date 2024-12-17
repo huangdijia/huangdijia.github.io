@@ -106,9 +106,12 @@ Configure options:
 pie install swoole/swoole:v6.0.0 \
 --enable-sockets \
 --enable-openssl \
+--with-openssl-dir="/opt/homebrew/opt/openssl@1.1" \
 --enable-mysqlnd  \
 --enable-swoole-curl  \
---enable-iouring
+--enable-iouring \
+--enable-brotli \
+--enable-cares
 ```
 
 - 安装 Redis
