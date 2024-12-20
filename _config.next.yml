@@ -787,7 +787,7 @@ cloudflare_analytics:
 
 # Microsoft Clarity Analytics
 # See: https://clarity.microsoft.com/
-clarity_analytics: # <project_id>
+clarity_analytics: mieuyekodt
 
 # Matomo Analytics
 # See: https://matomo.org/
