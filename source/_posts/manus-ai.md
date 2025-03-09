@@ -106,12 +106,12 @@ Manus的爆发绝非偶然，它揭示了AI发展的本质规律：真正的革�
   "@type": "Article",
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "https://example.com/manus-ai-impact"
+    "@id": "https://hdj.me/manus-ai"
   },
   "headline": "Manus对AI发展的革命性影响",
   "image": [
-    "https://example.com/images/manus-workflow.jpg",
-    "https://example.com/images/future-office.jpg"
+    "https://hdj.me/images/manus-ai-2.png",
+    "https://hdj.me/images/manus-ai-3.png"
   ],
   "datePublished": "2025-03-09",
   "author": {
@@ -123,7 +123,7 @@ Manus的爆发绝非偶然，它揭示了AI发展的本质规律：真正的革�
     "name": "科技前沿洞察",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://example.com/logo.png"
+      "url": "https://hdj.me/images/manus-ai-4.png"
     }
   },
   "description": "深度解析Manus如何通过执行型AI重构产业生态，推动2025成为AI应用元年",

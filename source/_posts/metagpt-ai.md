@@ -112,14 +112,14 @@ MetaGPT生成的标准化文档成为团队协作的新枢纽。某开源项目�
   "author": [{
     "@type": "Person",
     "name": "AI科技观察员",
-    "url": "https://example.com/author"
+    "url": "https://hdj.me/metagpt-ai"
   }],
   "publisher": {
     "@type": "Organization",
     "name": "智能开发前沿",
     "logo": {
       "@type": "ImageObject",
-      "url": "https://example.com/logo.png"
+      "url": "https://hdj.me/images/future-dev.png"
     }
   },
   "description": "深入解析MetaGPT对软件开发全流程的影响，探讨开发者在AI时代的能力转型路径与职业发展建议。"
