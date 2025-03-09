@@ -1,7 +1,8 @@
 ---
 title:Manus：从执行型AI到行业重构，开启2025年AI应用元年的革命性突破
 date: 2025-03-09 13:06:41
-tags: [AI, Manus, 2025年]
+tags: [AI, Manus]
+categories: AI
 ---
 
 ![未来科技感的AI机器人正在处理多个任务，背景是数据流和城市剪影，风格为赛博朋克](images/manus-ai-1.png)
