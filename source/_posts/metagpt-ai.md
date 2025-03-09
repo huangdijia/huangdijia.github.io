@@ -1,6 +1,6 @@
 ---
 title: MetaGPT如何重塑开发者的工作模式与技能体系
-date: 2023-10-15 18:30:00
+date: 2025-03-09 15:02:13
 categories: AI
 tags: [MetaGPT, AI编程, 开发者工具, 自动化开发]
 ---
